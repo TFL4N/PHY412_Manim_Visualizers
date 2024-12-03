@@ -7,8 +7,8 @@ import numpy as np
 class EllipticPolar(ThreeDScene):
     def construct(self):
         axes = ThreeDAxes(
-            x_range=[-2,2,PI/4],
-            y_range=[-2,2,PI/4],
+            x_range=[0,2*PI,PI/4],
+            y_range=[0,2*PI,PI/4],
             z_range=[-6,6,1],
             x_length=2,
             y_length=2,
