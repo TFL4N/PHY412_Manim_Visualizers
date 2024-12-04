@@ -5,7 +5,7 @@ import numpy as np
 #print(dir(ThreeDAxes))
 
 def total_e(t):
-        return [t, np.cos(t), np.cos(t)]
+        return [t, np.cos(t), np.cos(t+PI/2)]
 
 
 class EllipticPolar(ThreeDScene):
@@ -34,7 +34,7 @@ class EllipticPolar(ThreeDScene):
                                     zoom=0.8)
 
         self.add(axes, graph)
-        #self.begin_ambient_camera_rotation(rate=0.1)
+        self.begin_ambient_camera_rotation(rate=0.1)
         #self.wait(5)
         self.play(theta.animate.set_value(6*PI), run_time=5, rate_func=linear)
         self.wait()
