@@ -43,9 +43,6 @@ class EllipticPolar(ThreeDScene):
                 color=BLUE
             )
  
-            start = axes.c2p(i*dt, 0, 0)
-            end = axes.c2p(total_e(i*dt))
-
             lines.add(line)
 
         
