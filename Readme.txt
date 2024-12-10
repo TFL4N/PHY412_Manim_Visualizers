@@ -14,3 +14,10 @@ manim -pql manim_demo.py
 
 -ql/qm/qh == quality flags: low, medium, high
 -p == auto open movie in default player
+--disable_caching == render without using cached data from previous renders
+
+Troubleshooting:
+* Output video not changing/updating
+  - Close Quicktime window of old video before opening (happens when new video replaces old video on disk)
+  - is manim using cached data when rendering (this info should print in console)
+    - use the command flag '--disable_caching'
