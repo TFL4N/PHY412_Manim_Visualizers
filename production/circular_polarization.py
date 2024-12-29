@@ -12,10 +12,13 @@ RIGHT_POLAR = 1
 LEFT_POLAR = 2
 
 class CircularPolarization(ThreeDScene):
-    def construct(self):
-        scene_type = SUPER_POS
-        polar_type = LEFT_POLAR
+    def __init__(self, polar, comp, *args, **kwargs):
+        self.scene_type = comp
+        self.polar_type = polar
+        super().__init__(*args, **kwargs)
+
         
+    def construct(self):
         # x range of propagation segment
         x_init = 0
         x_final = 10*PI
@@ -27,7 +30,7 @@ class CircularPolarization(ThreeDScene):
         t_end = ValueTracker(0) # animated value
         
         # build electric field coordinates
-        phase = PI/2 if polar_type == LEFT_POLAR else -PI/2
+        phase = PI/2 if self.polar_type == LEFT_POLAR else -PI/2
         def total_e(x, t):
             return np.array([x, np.cos(x-t+phase), np.cos(x-t)])
             
@@ -53,7 +56,7 @@ class CircularPolarization(ThreeDScene):
         #
         # Objects per scene type
         #
-        if scene_type == VERT_ONLY:
+        if self.scene_type == VERT_ONLY:
             comp_label = Tex(r"$\hat E_2 \cdot \vec E$")
             
             # vertical component of electric field
@@ -72,7 +75,7 @@ class CircularPolarization(ThreeDScene):
                                                       t_end.get_value()))
             self.add(comp)
             
-        elif scene_type == HORZ_ONLY:
+        elif self.scene_type == HORZ_ONLY:
             comp_label = Tex(r"$\hat E_1 \cdot \vec E$")
             
             # horizontal component of electric field
@@ -91,7 +94,7 @@ class CircularPolarization(ThreeDScene):
                                                       t_end.get_value()))
             self.add(comp)
             
-        elif scene_type == SUPER_POS:
+        elif self.scene_type == SUPER_POS:
             comp_label = Tex(r"$\vec E$")
 
             # electric field y & z components translated by x
@@ -121,7 +124,7 @@ class CircularPolarization(ThreeDScene):
         comp_label.to_corner(DOWN + LEFT)
 
         hand_label = Tex(r"Right Circular Polarization")
-        if polar_type == LEFT_POLAR:
+        if self.polar_type == LEFT_POLAR:
             hand_label = Tex(r"Left Circular Polarization")
         self.add_fixed_in_frame_mobjects(hand_label)
         hand_label.to_corner(UP + RIGHT)
@@ -141,3 +144,42 @@ class CircularPolarization(ThreeDScene):
                   run_time=t_final,
                   rate_func=linear)
         self.wait()
+
+
+if __name__ == "__main__":
+    # scene type to be rendered
+    polars = [
+        LEFT_POLAR,
+        RIGHT_POLAR
+    ]
+    comps = [
+        VERT_ONLY,
+        HORZ_ONLY,
+        SUPER_POS
+    ]
+
+    for p in polars:
+        for c in comps:
+            p_str = ''
+            if p == LEFT_POLAR:
+                p_str = 'left'
+            elif p == RIGHT_POLAR:
+                p_str = 'right'
+
+            c_str = ''
+            if c == VERT_ONLY:
+                c_str = 'vertical'
+            elif c == HORZ_ONLY:
+                c_str = 'horizontal'
+            elif c == SUPER_POS:
+                c_str = 'superposition'
+        
+            file_name = 'circular_' + p_str + '_' + c_str
+
+            with tempconfig({
+                    'preview': True,
+                    'quality': 'low_quality',
+                    'disable_caching': True,
+                    'output_file': file_name
+            }):
+               CircularPolarization(p,c).render()
