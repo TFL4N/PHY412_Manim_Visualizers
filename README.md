@@ -1,5 +1,12 @@
 # PHY412_Visualizers
 
+While taking Electrodynamics taught by Professor Richard Kirian at Arizona State University, I shared my recently created [Lissajous Figure Generator](https://github.com/TFL4N/Lissajous-HTML5) with the class.  Lissajous figures are created from two orthogonal sinusoids.
+
+Always trying to make class material more intuitive and understandable, Professor Kirian ask if I could help create visualizers for various concepts, in particular, the polarization of light that results from two orthogonal electromagnetic waves.  This repo contains the results of this collaboration 
+
+This gif is an example of right circular polarization:
+![Gif of Polarization](/examples/images/readme/circular_right_full_800x450.gif)
+
 ## Installation
 
 installs manim deps in new env 'manim'
