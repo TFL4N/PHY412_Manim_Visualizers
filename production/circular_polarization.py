@@ -43,6 +43,11 @@ class CircularPolarization(ThreeDScene):
             y_length=10,
             z_length=10
         )
+        ax_labels = axes.get_axis_labels(
+            MathTex(r'\hat x').scale(3),
+            MathTex(r'\hat E_1').scale(3),
+            MathTex(r'\hat E_2').scale(3),
+        )
 
         # propagating electric field vs time
         graph = always_redraw(lambda :
@@ -51,7 +56,7 @@ class CircularPolarization(ThreeDScene):
                                                          color=RED)
                               )
 
-        self.add(axes, graph)
+        self.add(axes, ax_labels, graph)
 
         #
         # Objects per scene type
