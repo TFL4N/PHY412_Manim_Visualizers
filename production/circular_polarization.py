@@ -12,22 +12,38 @@ RIGHT_POLAR = 1
 LEFT_POLAR = 2
 
 class CircularPolarization(ThreeDScene):
-    def __init__(self, polar, comp, *args, **kwargs):
+    def __init__(self, polar=LEFT_POLAR, comp=SUPER_POS, *args, **kwargs):
         self.scene_type = comp
         self.polar_type = polar
         super().__init__(*args, **kwargs)
 
         
     def construct(self):
-        # x range of propagation segment
-        x_init = 0
-        x_final = 10*PI
-        x_range = x_final - x_init
-        x_end = ValueTracker(x_init) # animated value
+        #
+        # Assumptions:
+        # use c=1 and w=1
+        # this implies k=1
+        #
+        # the wave front moves at speed c
+        #    x=ct=t
+        #
+        # e-field for positions less than x=ct
+        # where x is the position of the wave front
+        #  x-dx = t-dx
+        #
+        # in other words, any x is derived from current t
+        #
 
+        
         # time value range
-        t_final = 7
+        t_final = 10*PI
         t_end = ValueTracker(0) # animated value
+
+        # t_step controls the resolution (dt) when drawing the
+        # e-field curve.  Smaller t_step results in higher resolution
+        # t_step = 0.5 quick generation time but sub-par resolution
+        # t_step = 0.25 slow generation time but acceptable resolution
+        t_step = 0.25
         
         # build electric field coordinates
         phase = PI/2 if self.polar_type == LEFT_POLAR else -PI/2
@@ -36,7 +52,7 @@ class CircularPolarization(ThreeDScene):
             
         # 3D coordinate system
         axes = ThreeDAxes(
-            x_range=[0,x_range,PI/4],
+            x_range=[0,t_final,PI/4],
             y_range=[-2,2,1],
             z_range=[-2,2,1],
             x_length=15,
@@ -44,22 +60,17 @@ class CircularPolarization(ThreeDScene):
             z_length=10
         )
         ax_labels = axes.get_axis_labels(
-            MathTex(r'\hat x').scale(3),
+            MathTex(r'\hat k').scale(3),
             MathTex(r'\hat E_1').scale(3),
             MathTex(r'\hat E_2').scale(3),
         )
 
-        # propagating electric field vs time
-        graph = always_redraw(lambda :
-                              axes.plot_parametric_curve(lambda u: total_e(u, t_end.get_value()),
-                                                         t_range=[0, x_end.get_value(), 0.5],
-                                                         color=RED)
-                              )
+        self.add(axes, ax_labels)
 
-        self.add(axes, ax_labels, graph)
-
+        
         #
         # Objects per scene type
+        # - Draw these elements first so that they have low z-numbers
         #
         if self.scene_type == VERT_ONLY:
             comp_label = Tex(r"$\hat E_2 \cdot \vec E$")
@@ -76,7 +87,7 @@ class CircularPolarization(ThreeDScene):
                     color=BLUE
                 )
 
-            comp = always_redraw(lambda : comp_vector(x_end.get_value(),
+            comp = always_redraw(lambda : comp_vector(0,
                                                       t_end.get_value()))
             self.add(comp)
             
@@ -95,7 +106,7 @@ class CircularPolarization(ThreeDScene):
                     color=BLUE
                 )
 
-            comp = always_redraw(lambda : comp_vector(x_end.get_value(),
+            comp = always_redraw(lambda : comp_vector(0,
                                                       t_end.get_value()))
             self.add(comp)
             
@@ -117,9 +128,30 @@ class CircularPolarization(ThreeDScene):
                     color=BLUE
                 )
                 
-            radial = always_redraw(lambda : radial_arrow(x_end.get_value(),
+            radial = always_redraw(lambda : radial_arrow(0,
                                                          t_end.get_value()))
-            self.add(radial)
+
+            # curve at x=0 for one complete period of e-field
+            origin_curve = axes.plot_parametric_curve(lambda u: total_e(0, u),
+                                       t_range=[0, 2*PI, t_step],
+                                                      color=GREEN)
+            
+            self.add(radial, origin_curve)
+
+        
+        #    
+        # Propagating electric field vs time
+        # - draws and animates the main e-field curve
+        #
+        e_curve = lambda : \
+            axes.plot_parametric_curve(lambda u: total_e(u, t_end.get_value()),
+                                       t_range=[0, t_end.get_value(), t_step],
+                                       color=RED)
+        e_curve_anim = always_redraw(
+            e_curve
+        )
+
+        self.add(e_curve_anim)
 
 
         #
@@ -144,8 +176,7 @@ class CircularPolarization(ThreeDScene):
                                     zoom=0.6)
     
         # animate
-        self.play(x_end.animate.set_value(x_final),
-                  t_end.animate.set_value(t_final),
+        self.play(t_end.animate.set_value(t_final),
                   run_time=t_final,
                   rate_func=linear)
         self.wait()
