@@ -1,3 +1,4 @@
 __pycache__/
 media/
 products/
+.DS_Store
