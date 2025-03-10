@@ -214,7 +214,7 @@ if __name__ == "__main__":
 
             with tempconfig({
                     'preview': True,
-                    'quality': 'low_quality',
+                    'quality': 'high_quality',
                     'disable_caching': True,
                     'output_file': file_name
             }):
