@@ -1,4 +1,7 @@
-# PHY412_Visualizers
+# PHY412 Manim Visualizers
+
+This project has been superseded by an interactive version [PHY412_PyQtGraph_Visualizers](https://github.com/TFL4N/PHY412_PyQtGraph_Visualizers)
+___
 
 While taking Electrodynamics taught by Professor Richard Kirian at Arizona State University, I shared my recently created [Lissajous Figure Generator](https://github.com/TFL4N/Lissajous-HTML5) with the class.  Lissajous figures are created from two orthogonal sinusoids.
 
